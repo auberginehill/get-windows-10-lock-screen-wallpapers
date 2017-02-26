@@ -37,14 +37,14 @@
         <td style="padding:6px"><strong>Description:</strong></td>
         <td colspan="2" style="padding:6px">
             <p>
-                Get-Windows10LockScreenWallpapers uses by default one of the three methods listed below to determine the source path, where the Windows Spotlight lock screen wallpapers are stored locally:</p>
+                Get-Windows10LockScreenWallpapers uses by default one of the three methods below to determine the source path, where the Windows Spotlight lock screen wallpapers are stored locally:</p>
                 <ol>
                     <li>Reading a registry key under HKEY_CURRENT_USER: "<code>\SOFTWARE\Microsoft\Windows\CurrentVersion\Lock&nbsp;Screen\Creative\LandscapeAssetPath</code>"</li>
                     <li>Estimating the * value (and the source path) in "<code>$($env:LOCALAPPDATA)\Packages\Microsoft.Windows.ContentDelivery*\LocalState\Assets</code>" path, which on most Windows 10 machines would most likely point to the "<code>\Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy\LocalState\Assets</code>" directory</li>
                     <li>Figuring out the current lock screen hive (which usually is in the <code>$env:windir\Web\Screen</code> directory)</li>
                 </ol>
             <p>                
-                The methods are tested in an ascending order and selected as the primary (only) method, if deemed to be valid. By adding the <code>-Include</code> parameter to the command launching Get-Windows10LockScreenWallpapers the third method of wallpaper searching will be enabled, so that Get-Windows10LockScreenWallpapers will also look to the current lock screen hive, even if the first method (registry) or the second (estimation) method was selected as the primary method for searching the available local lock screen wallpapers.</p>
+                The methods are tested in an ascending order and selected as the primary (only) method, if deemed to be valid. By adding the <code>-Include</code> parameter to the command launching Get-Windows10LockScreenWallpapers the third method of wallpaper searching will be enabled, so that Get-Windows10LockScreenWallpapers will also look to the current lock screen hive, even if the first method (registry) or the second method (estimation) was selected as the primary method for searching the available local lock screen wallpapers.</p>
             <p>
                 Get-Windows10LockScreenWallpapers uses the inbuilt <code>Get-FileHash</code> cmdlet to calculate SHA256 hash values of the files for determining, whether a wallpaper already exists in the <code>-Output</code> folder or a portrait picture in the <code>-Subfolder</code> directory. By default Get-Windows10LockScreenWallpapers writes the landscape files to "<code>$($env:USERPROFILE)\Pictures\Wallpapers</code>"(, which is the default <code>-Output</code> directory), and the portrait pictures are placed in a subfolder called "<code>Vertical</code>" inside the folder specified with the <code>-Output</code> parameter. The primary save location ("<dfn>destination</dfn>") may be set with the <code>-Output</code> parameter, and the name of the subfolder may be changed with the <code>-Subfolder</code> parameter – the former accepts a full path as a value, and the latter just a plain directory name.</p>
             <p>
@@ -192,7 +192,7 @@
         <th>:arrow_right:</th>
         <td style="padding:6px">
             <ul>
-                <li>All new Windows Spotlight lock screen wallpapers are saved under a directory defined with the <code>-Output</code> parameter. Displays wallpaper related info in console, and if any new files were found, displays the results in a pop-up window (<code>Out-GridView</code>). Optionally, if the <code>-Log</code> parameter was used in the command launching Get-Windows10LockScreenWallpapers, and new files were found, a log file (<code>spotlight_log.csv</code>) creation/updating procedure is initiated at the path defined with the <code>-Output</code> variable. Also optionally, the default File Manager is opened at the <code>-Output</code> folder, after the new files are processed, if the <code>-Open</code> parameter was used in the command launching Get-Windows10LockScreenWallpapers. A progress bar is also shown in console, if multiple images are being processed.</li>
+                <li>All new Windows Spotlight lock screen wallpapers are saved under a directory defined with the <code>-Output</code> parameter. Displays wallpaper related info in console, and if any new files were found, displays the results in a pop-up window (<code>Out-GridView</code>). Optionally, if the <code>-Log</code> parameter was used in the command launching Get-Windows10LockScreenWallpapers, and new files were found, a log file (<code>spotlight_log.csv</code>) creation/updating procedure is initiated at the path defined with the <code>-Output</code> variable. Also optionally, the default File Manager is opened at the <code>-Output</code> folder, after the new files are processed, if the <code>-Open</code> parameter was used in the command launching Get-Windows10LockScreenWallpapers. A progress bar is also shown in console when multiple images are being processed.</li>
             </ul>
         </td>
     </tr>
@@ -318,13 +318,10 @@
                                         <td colspan="2" style="padding:6px">Removes the currently assigned execution policy from the current scope. If the execution policy in all scopes is set to <code>Undefined</code>, the effective execution policy is <code>Restricted</code>, which is the default execution policy. This parameter will not alter or remove the ("<dfn>master</dfn>") execution policy that is set with a Group Policy setting.</td>
                                     </tr>
                                     <tr>
-                                        <td colspan="3" style="padding:6px">Please note, that the Group Policy setting "<code>Turn on Script Execution</code>" overrides the execution policies set in Windows PowerShell in all scopes. To find this ("<dfn>master</dfn>") setting, please, for example, open the Group Policy Editor (<code>gpedit.msc</code>) and navigate to Computer Configuration → Administrative Templates → Windows Components → Windows PowerShell.</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding:6px">Notes</td>
+                                        <td style="padding:6px; border-top-width:1px; border-top-style:solid"><span style="font-size: 95%">Notes:</span></td>
                                         <td colspan="2" style="padding:6px">
                                             <ul>
-                                                <li>The Group Policy Editor is not available in any Home or Starter editions of Windows.</li>
+                                                <li><span style="font-size: 95%">Please note, that the Group Policy setting "<code>Turn on Script Execution</code>" overrides the execution policies set in Windows PowerShell in all scopes. To find this ("<dfn>master</dfn>") setting, please, for example, open the Group Policy Editor (<code>gpedit.msc</code>) and navigate to Computer Configuration → Administrative Templates → Windows Components → Windows PowerShell.</span></li>
                                             </ul>
                                         </td>
                                     </tr>
@@ -332,6 +329,7 @@
                                         <th></th>
                                         <td colspan="2" style="padding:6px">
                                             <ul>
+                                                <li><span style="font-size: 95%">The Group Policy Editor is not available in any Home or Starter editions of Windows.</span></li>                                            
                                                 <li><span style="font-size: 95%">Group Policy (<code>gpedit.msc</code>) setting "<code>Turn on Script Execution</code>":</span></li>
                                                 <ol>
                                                     <p>
