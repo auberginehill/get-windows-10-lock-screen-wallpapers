@@ -1122,20 +1122,20 @@ Retrieves Windows Spotlight lock screen wallpapers and saves them to a defined
 directory.
 
 .DESCRIPTION
- Get-Windows10LockScreenWallpapers uses by default one of three methods to determine
- the source path, where the Windows Spotlight lock screen wallpapers are stored
- locally:
+ Get-Windows10LockScreenWallpapers uses by default one of the three methods listed
+ below to determine the source path, where the Windows Spotlight lock screen
+ wallpapers are stored locally:
 
- 1. by reading the registry key
-    "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Lock Screen\Creative\LandscapeAssetPath",
- 2. by estimating the * value (and the source path) in
+ 1. Reading the registry key
+    "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Lock Screen\Creative\LandscapeAssetPath"
+ 2. Estimating the * value (and the source path) in
     "$($env:LOCALAPPDATA)\Packages\Microsoft.Windows.ContentDelivery*\LocalState\Assets"
     path, which on most Windows 10 machines would most likely point to the
-    "\Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy\LocalState\Assets" directory, or
- 3. by figuring out the current lock screen hive (which usually is in the
-    $env:windir\Web\Screen directory).
+    "\Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy\LocalState\Assets" directory
+ 3. Figuring out the current lock screen hive (which usually is in the
+    $env:windir\Web\Screen directory)
 
-The methods will be tested in an ascending order and selected as the primary (only)
+The methods are tested in an ascending order and selected as the primary (only)
 method, if deemed to be valid. By adding the -Include parameter to the command
 launching Get-Windows10LockScreenWallpapers the third method of wallpaper searching
 will be enabled, so that Get-Windows10LockScreenWallpapers will also look to the
@@ -1149,18 +1149,18 @@ in the -Output folder or a portrait picture in the -Subfolder directory. By defa
 Get-Windows10LockScreenWallpapers writes the landscape files to
 "$($env:USERPROFILE)\Pictures\Wallpapers"(, which is the default -Output directory),
 and the portrait pictures are placed in a subfolder called "Vertical" inside the
-folder specified with the -Output parameter. The save location ("destination") may
-be set with the -Output parameter, and the name of the subfolder may be set with
-the -Subfolder parameter - the former accepts a full path as a value, and the
-latter just a plain directory name.
+folder specified with the -Output parameter. The primary save location 
+("destination") may be set with the -Output parameter, and the name of the subfolder
+may be set with the -Subfolder parameter - the former accepts a full path as
+a value, and the latter just a plain directory name.
 
 The images are loaded as ImageFile COM objects with Microsoft Windows Image
 Acquisition (WIA, which relies on the Windows Image Acquisition (WIA) service
 'stisvc'), and over 300 image properties (usually, though, most of them are empty
 or non-existent...) are read from the pictures before the new images are copied to
-their final destination, which is set with the -Output parameter. To exclude the
-portrait pictures from the results altogether, the parameter -ExcludePortrait may
-be added to the command launching Get-Windows10LockScreenWallpapers.
+their final destination. To exclude the portrait pictures from the results 
+altogether, the parameter -ExcludePortrait may be added to the command launching
+Get-Windows10LockScreenWallpapers.
 
 By using the -Force parameter the -Output directory will be created without asking
 any questions, confirmations or additional selections (which will be prompted by
@@ -1195,7 +1195,7 @@ double). If the -Output parameter value seems to point to a non-existing directo
 the script will ask, whether the user wants to create the folder or not. This
 query can be bypassed by using the -Force parameter. It's not mandatory to write
 -Output in the get Windows 10 lock screen wallpapers command to invoke the -Output
-parameter, as is shown in the Examples below.
+parameter, as is described in the Examples below.
 
 .PARAMETER Subfolder
 with aliases -SubfolderForThePortraitPictures, -SubfolderForTheVerticalPictures
@@ -1220,8 +1220,8 @@ File Manager in every case, regardless whether any new files were found or not.
 .PARAMETER ExcludePortrait
 with aliases -NoPortrait, -NoSubfolder and -Exclude The -ExcludePortrait parameter
 excludes all portrait (vertical) pictures from the files that will be copied to a
-new location. Also prevents the (automatic) creation of the -Subfolder directory
-inside the main output destination.
+new location. -ExcludePortrait also prevents the (automatic) creation of the 
+-Subfolder directory inside the main output destination.
 
 .PARAMETER Include
 with an alias -IncludeCurrentLockScreenBackgroundHive. If the -Include parameter is
@@ -1249,7 +1249,7 @@ the MakerNote Exif tags means that extensive additional coding efforts would be
 needed for producing universally readable content from the MakerNote (37500) Exif
 tag values.
 
-The rather peculiar append procedure is used instead of the native -Append parameter
+A rather peculiar append procedure is used instead of the native -Append parameter
 of the Export-Csv cmdlet for ensuring, that the CSV file will not contain any
 additional quotation marks(, which might mess up the layout in some scenarios).
 
@@ -1258,9 +1258,9 @@ If the -Open parameter is used in the command launching
 Get-Windows10LockScreenWallpapers and new files are found, the default File Manager
 is opened at the -Output folder after the files are processed. If the -Force
 parameter is used in adjunction with the -Open parameter, the main destination path
-is opened in the File Manager in every case, regardless whether any new files were
-found or not. Please note, though, that the -Force parameter will also Force the
-creation of the -Output folder.
+is opened in the File Manager regardless whether any new files were found or not. 
+Please note, though, that the -Force parameter will also Force the creation of 
+the -Output folder.
 
 .PARAMETER Audio
 If the -Audio parameter is used in the command launching
@@ -1334,10 +1334,10 @@ found in the default -Output folder to determine, whether any new files are pres
 or not. Since the -ExcludePortrait parameter was used, the results are limited to
 the landscape wallpapers, and the vertical portrait pictures are excluded from the
 images to be processed further. If new landscape (horizontal) images were found,
-a log file creation/updating procedure is initiated, and a CSV-file
-(spotlight_log.csv) is created/updated at the default -Output folder after the new
- landscape wallpapers are copied to their default destination folder. Furthermore,
- if new files were indeed found, an audible beep will occur.
+after the new landscape wallpapers are copied to their default destination, a log 
+file creation/updating procedure is initiated, and a CSV-file (spotlight_log.csv) 
+is created/updated at the default -Output folder. Furthermore, if new files were 
+indeed found, an audible beep will occur.
 
 .EXAMPLE
 ./Get-Windows10LockScreenWallpapers -Output C:\Users\Dropbox\ -Subfolder dc01 -Include
@@ -1362,9 +1362,9 @@ in the default (LocalMachine) scope, and defines the conditions under which Wind
 PowerShell loads configuration files and runs scripts in general. In Windows Vista
 and later versions of Windows, for running commands that change the execution policy
 of the LocalMachine scope, Windows PowerShell has to be run with elevated rights
-(run as an administrator). The default policy of the default (LocalMachine) scope is
-"Restricted" and a command "Set-ExecutionPolicy Restricted", will "undo" the changes
-made with the original example command above (had the policy not been changed before).
+(Run as Administrator). The default policy of the default (LocalMachine) scope is
+"Restricted", and a command "Set-ExecutionPolicy Restricted" will "undo" the changes
+made with the original example above (had the policy not been changed before).
 Execution policies for the local computer (LocalMachine) and for the current user
 (CurrentUser) are stored in the registry (at for instance the
 HKLM:\Software\Policies\Microsoft\Windows\PowerShell\ExecutionPolicy key), and remain
@@ -1399,13 +1399,8 @@ effective until they are changed again. The execution policy for a particular se
                     any source. Risks running malicious scripts.
 
     Bypass          Nothing is blocked and there are no warnings or prompts.
-                    This execution policy is designed for configurations, in
-                    which a Windows PowerShell script is built in to a larger
-                    application, or for configurations, in which Windows
-                    PowerShell is the foundation for a program that has its own
-                    security model. Not only risks, but actually permits running
-                    any unsigned scripts from any source. Risks running malicious
-                    scripts.
+                    Not only risks, but actually permits running any unsigned scripts
+                    from any source. Risks running malicious scripts.
 
     Undefined       Removes the currently assigned execution policy from the current
                     scope. If the execution policy in all scopes is set to Undefined,
@@ -1416,17 +1411,12 @@ effective until they are changed again. The execution policy for a particular se
 
     Please note, that the Group Policy setting "Turn on Script Execution" overrides
     the execution policies set in Windows PowerShell in all scopes. To find this
-    ("master") setting, please, for example open the Group Policy Editor (gpedit.msc)
+    ("master") setting, please, for example, open the Group Policy Editor (gpedit.msc)
     and navigate to Computer Configuration > Administrative Templates >
     Windows Components > Windows PowerShell.
 
 
-    Notes 	      - The Group Policy setting ("Turn on Script Execution") is present
-                    in the Windows Server 2003 Service Pack 1 or later, and on the
-                    consumer products (depending on the Windows edition) in
-                    Windows XP Service Pack 2 or later.
-
-                  - The Group Policy Editor is not available in any Home or Starter
+    Notes 	      - The Group Policy Editor is not available in any Home or Starter
                     editions of Windows, be it Windows XP, Windows 7, Windows 8.1
                     or Windows 10.
 
