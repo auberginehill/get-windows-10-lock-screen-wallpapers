@@ -37,17 +37,18 @@
         <td style="padding:6px"><strong>Description:</strong></td>
         <td colspan="2" style="padding:6px">
             <p>
-                Get-Windows10LockScreenWallpapers uses by default one of three methods to determine the source path, where the Windows Spotlight lock screen wallpapers are stored locally:
+                Get-Windows10LockScreenWallpapers uses by default one of the three methods listed below to determine the source path, where the Windows Spotlight lock screen wallpapers are stored locally:</p>
                 <ol>
-                    <li>by reading the registry key "<code>HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Lock Screen\Creative\LandscapeAssetPath</code>",</li>
-                    <li>by estimating the * value (and the source path) in "<code>$($env:LOCALAPPDATA)\Packages\Microsoft.Windows.ContentDelivery*\LocalState\Assets</code>" path, which on most Windows 10 machines would most likely point to the "<code>\Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy\LocalState\Assets</code>" directory, or </li>
-                    <li>by figuring out the current lock screen hive (which usually is in the <code>$env:windir\Web\Screen</code> directory).</li>
+                    <li>Reading the registry key "<code>HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Lock&nbsp;Screen\Creative\LandscapeAssetPath</code>"</li>
+                    <li>Estimating the * value (and the source path) in "<code>$($env:LOCALAPPDATA)\Packages\Microsoft.Windows.ContentDelivery*\LocalState\Assets</code>" path, which on most Windows 10 machines would most likely point to the "<code>\Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy\LocalState\Assets</code>" directory</li>
+                    <li>Figuring out the current lock screen hive (which usually is in the <code>$env:windir\Web\Screen</code> directory)</li>
                 </ol>
-                The methods will be tested in an ascending order and selected as the primary (only) method, if deemed to be valid. By adding the <code>-Include</code> parameter to the command launching Get-Windows10LockScreenWallpapers the third method of wallpaper searching will be enabled, so that Get-Windows10LockScreenWallpapers will also look to the current lock screen hive, even if the first method (registry) or the second (estimation) method was selected as the primary method for searching the available local lock screen wallpapers.</p>
+            <p>                
+                The methods are tested in an ascending order and selected as the primary (only) method, if deemed to be valid. By adding the <code>-Include</code> parameter to the command launching Get-Windows10LockScreenWallpapers the third method of wallpaper searching will be enabled, so that Get-Windows10LockScreenWallpapers will also look to the current lock screen hive, even if the first method (registry) or the second (estimation) method was selected as the primary method for searching the available local lock screen wallpapers.</p>
             <p>
-                Get-Windows10LockScreenWallpapers uses the inbuilt <code>Get-FileHash</code> cmdlet to calculate SHA256 hash values of the files for determining, whether a wallpaper already exists in the <code>-Output</code> folder or a portrait picture in the <code>-Subfolder</code> directory. By default Get-Windows10LockScreenWallpapers writes the landscape files to "<code>$($env:USERPROFILE)\Pictures\Wallpapers</code>"(, which is the default <code>-Output</code> directory), and the portrait pictures are placed in a subfolder called "<code>Vertical</code>" inside the folder specified with the <code>-Output</code> parameter. The save location ("<dfn>destination</dfn>") may be set with the <code>-Output</code> parameter, and the name of the subfolder may be set with the <code>-Subfolder</code> parameter – the former accepts a full path as a value, and the latter just a plain directory name.</p>
+                Get-Windows10LockScreenWallpapers uses the inbuilt <code>Get-FileHash</code> cmdlet to calculate SHA256 hash values of the files for determining, whether a wallpaper already exists in the <code>-Output</code> folder or a portrait picture in the <code>-Subfolder</code> directory. By default Get-Windows10LockScreenWallpapers writes the landscape files to "<code>$($env:USERPROFILE)\Pictures\Wallpapers</code>"(, which is the default <code>-Output</code> directory), and the portrait pictures are placed in a subfolder called "<code>Vertical</code>" inside the folder specified with the <code>-Output</code> parameter. The primary save location ("<dfn>destination</dfn>") may be set with the <code>-Output</code> parameter, and the name of the subfolder may be set with the <code>-Subfolder</code> parameter – the former accepts a full path as a value, and the latter just a plain directory name.</p>
             <p>
-                The images are loaded as ImageFile COM objects with Microsoft Windows Image Acquisition (WIA, which relies on the Windows Image Acquisition (WIA) service '<code>stisvc</code>'), and over 300 image properties (usually, though, most of them are empty or non-existent...) are read from the pictures before the new images are copied to their final destination, which is set with the <code>-Output</code> parameter. To exclude the portrait pictures from the results altogether, the parameter <code>-ExcludePortrait</code> may be added to the command launching Get-Windows10LockScreenWallpapers.</p>
+                The images are loaded as ImageFile COM objects with Microsoft Windows Image Acquisition (WIA, which relies on the Windows Image Acquisition (WIA) service '<code>stisvc</code>'), and over 300 image properties (usually, though, most of them are empty or non-existent...) are read from the pictures before the new images are copied to their final destination. To exclude the portrait pictures from the results altogether, the parameter <code>-ExcludePortrait</code> may be added to the command launching Get-Windows10LockScreenWallpapers.</p>
             <p>
                 By using the <code>-Force</code> parameter the <code>-Output</code> directory will be created without asking any questions, confirmations or additional selections (which will be prompted by default, if the <code>-Output</code> path doesn't seem to exist), and if the <code>-Open</code> parameter was used in adjunction with the <code>-Force</code> parameter in the command launching Get-Windows10LockScreenWallpapers, the main destination path is opened in the default File Manager in every case, regardless whether any new files were found or not. The <code>-Audio</code> parameter will trigger an audible beep, if new files were processed, and the <code>-Log</code> parameter will start a log creation procedure, in which the extracted image properties are written to a new CSV file (<code>spotlight_log.csv</code>) or appended to an existing log file. Please note that if any of the individual parameter values include space characters, the individual value should be enclosed in quotation marks (single or double), so that PowerShell can interpret the command correctly. This script is forked from robledosm's script <a href="https://github.com/robledosm/save-lockscreen-as-wallpaper">Save lockscreen as wallpaper</a>.</p>
         </td>
@@ -123,7 +124,7 @@
                 <li>
                     <h5>Parameter <code>-Output</code></h5>
                     <p>with aliases <code>-Path</code>, <code>-Destination</code> and <code>-OutputFolder</code>. Specifies the primary folder, where the acquired new images are to be saved, and defines the default location to be used with the <code>-Log</code> parameter (<code>spotlight_log.csv</code>), and also sets the parent directory for the <code>-Subfolder</code> parameter. The default save location for the horizontal (landscape) wallpapers is "<code>$($env:USERPROFILE)\Pictures\Wallpapers</code>", which will be used, if no value for the <code>-Output</code> parameter is defined in the command launching Get-Windows10LockScreenWallpapers. For the best results in iterative usage of Get-Windows10LockScreenWallpapers, the default value should remain constant and be set according to the prevailing conditions (at line 18).</p>
-                    <p>The value for the <code>-Output</code> parameter should be a valid file system path pointing to a directory (a full path of a folder such as <code>C:\Windows</code>). In case the path includes space characters, please enclose the path in quotation marks (single or double). If the <code>-Output</code> parameter value seems to point to a non-existing directory, the script will ask, whether the user wants to create the folder or not. This query can be bypassed by using the <code>-Force</code> parameter. It's not mandatory to write <code>-Output</code> in the get Windows 10 lock screen wallpapers command to invoke the <code>-Output</code> parameter, as is shown in the Examples below.</p>
+                    <p>The value for the <code>-Output</code> parameter should be a valid file system path pointing to a directory (a full path of a folder such as <code>C:\Windows</code>). In case the path includes space characters, please enclose the path in quotation marks (single or double). If the <code>-Output</code> parameter value seems to point to a non-existing directory, the script will ask, whether the user wants to create the folder or not. This query can be bypassed by using the <code>-Force</code> parameter. It's not mandatory to write <code>-Output</code> in the get Windows 10 lock screen wallpapers command to invoke the <code>-Output</code> parameter, as is described in the Examples below.</p>
                 </li>
             </ul>
         </td>
@@ -147,7 +148,7 @@
                 <p>
                     <li>
                         <h5>Parameter <code>-ExcludePortrait</code></h5>
-                        <p>with aliases <code>-NoPortrait</code>, <code>-NoSubfolder</code> and <code>-Exclude</code> The <code>-ExcludePortrait</code> parameter excludes all portrait (vertical) pictures from the files that will be copied to a new location. Also prevents the (automatic) creation of the <code>-Subfolder</code> directory inside the main output destination.</p>
+                        <p>with aliases <code>-NoPortrait</code>, <code>-NoSubfolder</code> and <code>-Exclude</code> The <code>-ExcludePortrait</code> parameter excludes all portrait (vertical) pictures from the files that will be copied to a new location. <code>-ExcludePortrait</code> also prevents the (automatic) creation of the <code>-Subfolder</code> directory inside the main output destination.</p>
                     </li>
                 </p>
                 <p>
@@ -161,13 +162,13 @@
                         <h5>Parameter <code>-Log</code></h5>
                         <p>If the <code>-Log</code> parameter is added to the command launching Get-Windows10LockScreenWallpapers, a log file creation/updating procedure is initiated, if new files are found. The log file (<code>spotlight_log.csv</code>) is created or updated at the path defined with the <code>-Output</code> parameter. If the CSV log file seems to already exist, new data will be appended to the end of that file. The log file will consist over 300 image properties, of which most are empty.</p>
                         <p>The <code>MakerNote</code> Exif datafield is disabled (commented out in the source code) mainly due to the vast variation of the formats used in the <code>MakerNote</code> Exif datafields themselves. The exhaustive amount of different languages and data formats found in the <code>MakerNote</code> Exif tags means that extensive additional coding efforts would be needed for producing universally readable content from the <code>MakerNote</code> (37500) Exif tag values.</p>
-                        <p>The rather peculiar append procedure is used instead of the native <code>-Append</code> parameter of the <code>Export-Csv</code> cmdlet for ensuring, that the CSV file will not contain any additional quotation marks(, which might mess up the layout in some scenarios).</p>
+                        <p>A rather peculiar append procedure is used instead of the native <code>-Append</code> parameter of the <code>Export-Csv</code> cmdlet for ensuring, that the CSV file will not contain any additional quotation marks(, which might mess up the layout in some scenarios).</p>
                     </li>
                 </p>
                 <p>
                     <li>
                         <h5>Parameter <code>-Open</code></h5>
-                        <p>If the <code>-Open</code> parameter is used in the command launching Get-Windows10LockScreenWallpapers and new files are found, the default File Manager is opened at the <code>-Output</code> folder after the files are processed. If the <code>-Force</code> parameter is used in adjunction with the <code>-Open</code> parameter, the main destination path is opened in the File Manager in every case, regardless whether any new files were found or not. Please note, though, that the <code>-Force</code> parameter will also Force the creation of the <code>-Output</code> folder.</p>
+                        <p>If the <code>-Open</code> parameter is used in the command launching Get-Windows10LockScreenWallpapers and new files are found, the default File Manager is opened at the <code>-Output</code> folder after the files are processed. If the <code>-Force</code> parameter is used in adjunction with the <code>-Open</code> parameter, the main destination path is opened in the File Manager regardless whether any new files were found or not. Please note, though, that the <code>-Force</code> parameter will also Force the creation of the <code>-Output</code> folder.</p>
                     </li>
                 </p>
                 <p>
@@ -191,7 +192,7 @@
         <th>:arrow_right:</th>
         <td style="padding:6px">
             <ul>
-                <li>All new Windows Spotlight lock screen wallpapers are saved under a directory defined with the <code>-Output</code> parameter. Displays wallpaper related info in console, and if any new files were found, displays the results in a pop-up window <code>(Out-GridView</code>). Optionally, if the <code>-Log</code> parameter was used in the command launching Get-Windows10LockScreenWallpapers, and new files were found, a log file (<code>spotlight_log.csv</code>) creation/updating procedure is initiated at the path defined with the <code>-Output</code> variable. Also optionally, the default File Manager is opened at the <code>-Output</code> folder, after the new files are processed, if the <code>-Open</code> parameter was used in the command launching Get-Windows10LockScreenWallpapers. A progress bar is also shown in console, if multiple images are being processed.</li>
+                <li>All new Windows Spotlight lock screen wallpapers are saved under a directory defined with the <code>-Output</code> parameter. Displays wallpaper related info in console, and if any new files were found, displays the results in a pop-up window (<code>Out-GridView</code>). Optionally, if the <code>-Log</code> parameter was used in the command launching Get-Windows10LockScreenWallpapers, and new files were found, a log file (<code>spotlight_log.csv</code>) creation/updating procedure is initiated at the path defined with the <code>-Output</code> variable. Also optionally, the default File Manager is opened at the <code>-Output</code> folder, after the new files are processed, if the <code>-Open</code> parameter was used in the command launching Get-Windows10LockScreenWallpapers. A progress bar is also shown in console, if multiple images are being processed.</li>
             </ul>
         </td>
     </tr>
@@ -280,7 +281,7 @@
                 </p>
                 <p>
                     <li><code>./Get-Windows10LockScreenWallpapers.ps1 -Log -Audio -Open -ExcludePortrait -Force</code><br />
-                    Runs the script and creates the default <code>-Output</code> folder, if it doesn't exist, since the <code>-Force</code> was used. Also, since the <code>-Force</code> was used, the File Manager will be opened at the default <code>-Output</code> folder regardless whether any new files were found or not. Uses one of the three available methods for retrieving the Windows Spotlight lock screen wallpapers and compares their SHA256 hash values against the hash values found in the default <code>-Output</code> folder to determine, whether any new files are present or not. Since the <code>-ExcludePortrait</code> parameter was used, the results are limited to the landscape wallpapers, and the vertical portrait pictures are excluded from the images to be processed further. If new landscape (horizontal) images were found, a log file creation/updating procedure is initiated, and a CSV-file (<code>spotlight_log.csv</code>) is created/updated at the default <code>-Output</code> folder after the new landscape wallpapers are copied to their default destination folder. Furthermore, if new files were indeed found, an audible beep will occur.</li>
+                    Runs the script and creates the default <code>-Output</code> folder, if it doesn't exist, since the <code>-Force</code> was used. Also, since the <code>-Force</code> was used, the File Manager will be opened at the default <code>-Output</code> folder regardless whether any new files were found or not. Uses one of the three available methods for retrieving the Windows Spotlight lock screen wallpapers and compares their SHA256 hash values against the hash values found in the default <code>-Output</code> folder to determine, whether any new files are present or not. Since the <code>-ExcludePortrait</code> parameter was used, the results are limited to the landscape wallpapers, and the vertical portrait pictures are excluded from the images to be processed further. If new landscape (horizontal) images were found, after the new landscape wallpapers are copied to their default destination, a log file creation/updating procedure is initiated, and a CSV-file (<code>spotlight_log.csv</code>) is created/updated at the default <code>-Output</code> folder. Furthermore, if new files were indeed found, an audible beep will occur.</li>
                 </p>
                 <p>
                     <li><code>./Get-Windows10LockScreenWallpapers <code>-Output</code> C:\Users\Dropbox\ <code>-Subfolder</code> dc01 -Include</code><br />
@@ -288,77 +289,85 @@
                 </p>
                 <p>
                     <li><p><code>Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope LocalMachine</code><br />
-                    This command is altering the Windows PowerShell rights to enable script execution in the default (<code>LocalMachine</code>) scope, and defines the conditions under which Windows PowerShell loads configuration files and runs scripts in general. In Windows Vista and later versions of Windows, for running commands that change the execution policy of the <code>LocalMachine</code> scope, Windows PowerShell has to be run with elevated rights (run as an administrator). The default policy of the default (<code>LocalMachine</code>) scope is "<code>Restricted</code>" and a command "<code>Set-ExecutionPolicy Restricted</code>", will "<dfn>undo</dfn>" the changes made with the original example command above (had the policy not been changed before). Execution policies for the local computer (<code>LocalMachine</code>) and for the current user (<code>CurrentUser</code>) are stored in the registry (at for instance the <code>HKLM:\Software\Policies\Microsoft\Windows\PowerShell\ExecutionPolicy</code> key), and remain effective until they are changed again. The execution policy for a particular session (<code>Process</code>) is stored only in memory, and is discarded when the session is closed.</p>
+                    This command is altering the Windows PowerShell rights to enable script execution in the default (<code>LocalMachine</code>) scope, and defines the conditions under which Windows PowerShell loads configuration files and runs scripts in general. In Windows Vista and later versions of Windows, for running commands that change the execution policy of the <code>LocalMachine</code> scope, Windows PowerShell has to be run with elevated rights (<dfn>Run as Administrator</dfn>). The default policy of the default (<code>LocalMachine</code>) scope is "<code>Restricted</code>", and a command "<code>Set-ExecutionPolicy Restricted</code>" will "<dfn>undo</dfn>" the changes made with the original example above (had the policy not been changed before). Execution policies for the local computer (<code>LocalMachine</code>) and for the current user (<code>CurrentUser</code>) are stored in the registry (at for instance the <code>HKLM:\Software\Policies\Microsoft\Windows\PowerShell\ExecutionPolicy</code> key), and remain effective until they are changed again. The execution policy for a particular session (<code>Process</code>) is stored only in memory, and is discarded when the session is closed.</p>
                         <p>Parameters:
-                                <ul>
-                                    <table>
-                                        <tr>
-                                            <td style="padding:6px"><code>Restricted</code></td>
-                                            <td colspan="2" style="padding:6px">Does not load configuration files or run scripts, but permits individual commands. <code>Restricted</code> is the default execution policy.</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding:6px"><code>AllSigned</code></td>
-                                            <td colspan="2" style="padding:6px">Scripts can run. Requires that all scripts and configuration files be signed by a trusted publisher, including the scripts that have been written on the local computer. Risks running signed, but malicious, scripts.</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding:6px"><code>RemoteSigned</code></td>
-                                            <td colspan="2" style="padding:6px">Requires a digital signature from a trusted publisher on scripts and configuration files that are downloaded from the Internet (including e-mail and instant messaging programs). Does not require digital signatures on scripts that have been written on the local computer. Permits running unsigned scripts that are downloaded from the Internet, if the scripts are unblocked by using the <code>Unblock-File</code> cmdlet. Risks running unsigned scripts from sources other than the Internet and signed, but malicious, scripts.</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding:6px"><code>Unrestricted</code></td>
-                                            <td colspan="2" style="padding:6px">Loads all configuration files and runs all scripts. Warns the user before running scripts and configuration files that are downloaded from the Internet. Not only risks, but actually permits, eventually, running any unsigned scripts from any source. Risks running malicious scripts.</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding:6px"><code>Bypass</code></td>
-                                            <td colspan="2" style="padding:6px">Nothing is blocked and there are no warnings or prompts. This execution policy is designed for configurations, in which a Windows PowerShell script is built in to a larger application, or for configurations, in which Windows PowerShell is the foundation for a program that has its own security model. Not only risks, but actually permits running any unsigned scripts from any source. Risks running malicious scripts.</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding:6px"><code>Undefined</code></td>
-                                            <td colspan="2" style="padding:6px">Removes the currently assigned execution policy from the current scope. If the execution policy in all scopes is set to <code>Undefined</code>, the effective execution policy is <code>Restricted</code>, which is the default execution policy. This parameter will not alter or remove the ("<dfn>master</dfn>") execution policy that is set with a Group Policy setting.</td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="3" style="padding:6px">Please note, that the Group Policy setting "<code>Turn on Script Execution</code>" overrides the execution policies set in Windows PowerShell in all scopes. To find this ("<dfn>master</dfn>") setting, please, for example open the Group Policy Editor (<code>gpedit.msc</code>) and navigate to Computer Configuration → Administrative Templates → Windows Components → Windows PowerShell.</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding:6px">Notes</td>
-                                            <td colspan="2" style="padding:6px">
-                                                <li>The Group Policy setting ("<code>Turn on Script Execution</code>") is present in the Windows Server 2003 Service Pack 1 or later, and on the consumer products (depending on the Windows edition) in Windows XP Service Pack 2 or later.</li>
+                            <ul>
+                                <table>
+                                    <tr>
+                                        <td style="padding:6px"><code>Restricted</code></td>
+                                        <td colspan="2" style="padding:6px">Does not load configuration files or run scripts, but permits individual commands. <code>Restricted</code> is the default execution policy.</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding:6px"><code>AllSigned</code></td>
+                                        <td colspan="2" style="padding:6px">Scripts can run. Requires that all scripts and configuration files be signed by a trusted publisher, including the scripts that have been written on the local computer. Risks running signed, but malicious, scripts.</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding:6px"><code>RemoteSigned</code></td>
+                                        <td colspan="2" style="padding:6px">Requires a digital signature from a trusted publisher on scripts and configuration files that are downloaded from the Internet (including e-mail and instant messaging programs). Does not require digital signatures on scripts that have been written on the local computer. Permits running unsigned scripts that are downloaded from the Internet, if the scripts are unblocked by using the <code>Unblock-File</code> cmdlet. Risks running unsigned scripts from sources other than the Internet and signed, but malicious, scripts.</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding:6px"><code>Unrestricted</code></td>
+                                        <td colspan="2" style="padding:6px">Loads all configuration files and runs all scripts. Warns the user before running scripts and configuration files that are downloaded from the Internet. Not only risks, but actually permits, eventually, running any unsigned scripts from any source. Risks running malicious scripts.</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding:6px"><code>Bypass</code></td>
+                                        <td colspan="2" style="padding:6px">Nothing is blocked and there are no warnings or prompts. Not only risks, but actually permits running any unsigned scripts from any source. Risks running malicious scripts.</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding:6px"><code>Undefined</code></td>
+                                        <td colspan="2" style="padding:6px">Removes the currently assigned execution policy from the current scope. If the execution policy in all scopes is set to <code>Undefined</code>, the effective execution policy is <code>Restricted</code>, which is the default execution policy. This parameter will not alter or remove the ("<dfn>master</dfn>") execution policy that is set with a Group Policy setting.</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3" style="padding:6px">Please note, that the Group Policy setting "<code>Turn on Script Execution</code>" overrides the execution policies set in Windows PowerShell in all scopes. To find this ("<dfn>master</dfn>") setting, please, for example, open the Group Policy Editor (<code>gpedit.msc</code>) and navigate to Computer Configuration → Administrative Templates → Windows Components → Windows PowerShell.</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding:6px">Notes</td>
+                                        <td colspan="2" style="padding:6px">
+                                            <ul>
                                                 <li>The Group Policy Editor is not available in any Home or Starter editions of Windows, be it Windows XP, Windows 7, Windows 8.1 or Windows 10.</li>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th></th>
-                                            <td colspan="2" style="padding:6px">
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th></th>
+                                        <td colspan="2" style="padding:6px">
+                                            <ul>
                                                 <li><span style="font-size: 95%">Group Policy (<code>gpedit.msc</code>) setting "<code>Turn on Script Execution</code>":</span></li>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th rowspan="6"></th>
-                                            <td style="padding:6px; font-size: 85%"><strong>Option</strong></td>
-                                            <td style="padding:6px; font-size: 85%"><strong>PowerShell Equivalent</strong> (concerning all scopes)</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding:6px; font-size: 85%"><code>Not configured</code></td>
-                                            <td style="padding:6px; font-size: 85%">No effect, the default value of this setting</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding:6px; font-size: 85%"><code>Disabled</code></td>
-                                            <td style="padding:6px; font-size: 85%"><code>Restricted</code></td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding:6px; font-size: 85%"><code>Enabled</code> - Allow only signed scripts</td>
-                                            <td style="padding:6px; font-size: 85%"><code>AllSigned</code></td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding:6px; font-size: 85%"><code>Enabled</code> - Allow local scripts and remote signed scripts</td>
-                                            <td style="padding:6px; font-size: 85%"><code>RemoteSigned</code></td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding:6px; font-size: 85%"><code>Enabled</code> - Allow all scripts</td>
-                                            <td style="padding:6px; font-size: 85%"><code>Unrestricted</code></td>
-                                        </tr>
-                                    </table>
-                                </ul>
+                                                <ol>
+                                                    <p>
+                                                        <table>
+                                                            <tr>
+                                                                <td style="padding:6px; font-size: 85%"><strong>Option</strong></td>
+                                                                <td style="padding:6px; font-size: 85%"><strong>PowerShell Equivalent</strong> (concerning all scopes)</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="padding:6px; font-size: 85%"><code>Not configured</code></td>
+                                                                <td style="padding:6px; font-size: 85%">No effect, the default value of this setting</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="padding:6px; font-size: 85%"><code>Disabled</code></td>
+                                                                <td style="padding:6px; font-size: 85%"><code>Restricted</code></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="padding:6px; font-size: 85%"><code>Enabled</code> - Allow only signed scripts</td>
+                                                                <td style="padding:6px; font-size: 85%"><code>AllSigned</code></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="padding:6px; font-size: 85%"><code>Enabled</code> - Allow local scripts and remote signed scripts</td>
+                                                                <td style="padding:6px; font-size: 85%"><code>RemoteSigned</code></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="padding:6px; font-size: 85%"><code>Enabled</code> - Allow all scripts</td>
+                                                                <td style="padding:6px; font-size: 85%"><code>Unrestricted</code></td>
+                                                            </tr>
+                                                        </table>
+                                                    </p>
+                                                </ol>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </ul>
                         </p>
                     <p>For more information, please type "<code>Get-ExecutionPolicy -List</code>", "<code>help Set-ExecutionPolicy -Full</code>", "<code>help about_Execution_Policies</code>" or visit <a href="https://technet.microsoft.com/en-us/library/hh849812.aspx">Set-ExecutionPolicy</a> or <a href="http://go.microsoft.com/fwlink/?LinkID=135170">about_Execution_Policies</a>.</p>
                     </li>
