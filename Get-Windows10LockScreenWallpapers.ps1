@@ -1122,11 +1122,11 @@ Retrieves Windows Spotlight lock screen wallpapers and saves them to a defined
 directory.
 
 .DESCRIPTION
- Get-Windows10LockScreenWallpapers uses by default one of the three methods listed
+ Get-Windows10LockScreenWallpapers uses by default one of the three methods
  below to determine the source path, where the Windows Spotlight lock screen
  wallpapers are stored locally:
 
- 1. Reading the registry key
+ 1. Reading a registry key under HKEY_CURRENT_USER:
     "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Lock Screen\Creative\LandscapeAssetPath"
  2. Estimating the * value (and the source path) in
     "$($env:LOCALAPPDATA)\Packages\Microsoft.Windows.ContentDelivery*\LocalState\Assets"
@@ -1140,7 +1140,7 @@ method, if deemed to be valid. By adding the -Include parameter to the command
 launching Get-Windows10LockScreenWallpapers the third method of wallpaper searching
 will be enabled, so that Get-Windows10LockScreenWallpapers will also look to the
 current lock screen hive, even if the first method (registry) or the second
-(estimation) method was selected as the primary method for searching the available
+method (estimation) was selected as the primary method for searching the available
 local lock screen wallpapers.
 
 Get-Windows10LockScreenWallpapers uses the inbuilt Get-FileHash cmdlet to calculate
@@ -1151,7 +1151,7 @@ Get-Windows10LockScreenWallpapers writes the landscape files to
 and the portrait pictures are placed in a subfolder called "Vertical" inside the
 folder specified with the -Output parameter. The primary save location 
 ("destination") may be set with the -Output parameter, and the name of the subfolder
-may be set with the -Subfolder parameter - the former accepts a full path as
+may be changed with the -Subfolder parameter - the former accepts a full path as
 a value, and the latter just a plain directory name.
 
 The images are loaded as ImageFile COM objects with Microsoft Windows Image
@@ -1162,19 +1162,14 @@ their final destination. To exclude the portrait pictures from the results
 altogether, the parameter -ExcludePortrait may be added to the command launching
 Get-Windows10LockScreenWallpapers.
 
-By using the -Force parameter the -Output directory will be created without asking
-any questions, confirmations or additional selections (which will be prompted by
-default, if the -Output path doesn't seem to exist), and if the -Open parameter
-was used in adjunction with the -Force parameter in the command launching
-Get-Windows10LockScreenWallpapers, the main destination path is opened in the
-default File Manager in every case, regardless whether any new files were found
-or not. The -Audio parameter will trigger an audible beep, if new files were
-processed, and the -Log parameter will start a log creation procedure, in which
-the extracted image properties are written to a new CSV file (spotlight_log.csv)
-or appended to an existing log file. Please note that if any of the individual
-parameter values include space characters, the individual value should be enclosed
-in quotation marks (single or double), so that PowerShell can interpret the command
-correctly. This script is forked from robledosm's script "Save lockscreen as wallpaper"
+The -Log parameter will start a log creation procedure (in case new files were 
+acquired), in which the extracted image properties are written to a new CSV file 
+(spotlight_log.csv) or appended to an existing log file. The other available 
+parameters (-Force, -Open and -Audio) are discussed in further detail below. 
+Please note that if any of the individual parameter values include space 
+characters, the individual value should be enclosed in quotation marks (single 
+or double), so that PowerShell can interpret the command correctly. This script 
+is forked from robledosm's script "Save lockscreen as wallpaper"
 (https://github.com/robledosm/save-lockscreen-as-wallpaper).
 
 .PARAMETER Output
@@ -1185,17 +1180,17 @@ directory for the -Subfolder parameter. The default save location for the horizo
 (landscape) wallpapers is "$($env:USERPROFILE)\Pictures\Wallpapers", which will be
 used, if no value for the -Output parameter is defined in the command launching
 Get-Windows10LockScreenWallpapers. For the best results in iterative usage of
-Get-Windows10LockScreenWallpapers, the default value should remain constant and
-be set according to the prevailing conditions (at line 18).
+this script, the default value should remain constant and be set according to the
+prevailing conditions (at line 18).
 
 The value for the -Output parameter should be a valid file system path pointing
-to a directory (a full path of a folder such as C:\Windows). In case the path
-includes space characters, please enclose the path in quotation marks (single or
-double). If the -Output parameter value seems to point to a non-existing directory,
-the script will ask, whether the user wants to create the folder or not. This
-query can be bypassed by using the -Force parameter. It's not mandatory to write
--Output in the get Windows 10 lock screen wallpapers command to invoke the -Output
-parameter, as is described in the Examples below.
+to a directory (a full path of a folder such as C:\Users\Dropbox\). In case the
+path includes space characters, please enclose the path in quotation marks (single
+or double). If the -Output parameter value seems to point to a non-existing
+directory, the script will ask, whether the user wants to create the folder or not.
+This query can be bypassed by using the -Force parameter. It's not mandatory to
+write -Output in the get Windows 10 lock screen wallpapers command to invoke the
+-Output parameter, as is described in the Examples below.
 
 .PARAMETER Subfolder
 with aliases -SubfolderForThePortraitPictures, -SubfolderForTheVerticalPictures
@@ -1221,7 +1216,7 @@ File Manager in every case, regardless whether any new files were found or not.
 with aliases -NoPortrait, -NoSubfolder and -Exclude The -ExcludePortrait parameter
 excludes all portrait (vertical) pictures from the files that will be copied to a
 new location. -ExcludePortrait also prevents the (automatic) creation of the 
--Subfolder directory inside the main output destination.
+-Subfolder directory inside the main -Output destination.
 
 .PARAMETER Include
 with an alias -IncludeCurrentLockScreenBackgroundHive. If the -Include parameter is
@@ -1276,7 +1271,7 @@ Get-Windows10LockScreenWallpapers, and new files were found, a log file
 with the -Output variable. Also optionally, the default File Manager is opened at
 the -Output folder, after the new files are processed, if the -Open parameter was
 used in the command launching Get-Windows10LockScreenWallpapers. A progress bar is
-also shown in console, if multiple images are being processed.
+also shown in console when multiple images are being processed.
 
 
     Default values (the log file creation/updating procedure only occurs, if the
@@ -1326,8 +1321,8 @@ Displays the help file.
 .EXAMPLE
 .\Get-Windows10LockScreenWallpapers.ps1 -Log -Audio -Open -ExcludePortrait -Force
 Runs the script and creates the default -Output folder, if it doesn't exist, since
-the -Force was used. Also, since the -Force was used, the File Manager will be
-opened at the default -Output folder regardless whether any new files were found
+the -Force was used. Also, since the -Force was used, the default File Manager will 
+be opened at the default -Output folder regardless whether any new files were found
 or not. Uses one of the three available methods for retrieving the Windows Spotlight
 lock screen wallpapers and compares their SHA256 hash values against the hash values
 found in the default -Output folder to determine, whether any new files are present
@@ -1351,7 +1346,7 @@ found in the "C:\Users\Dropbox\" and "C:\Users\Dropbox\dc01" folders to determin
 whether any new files are present or not. All new landscape images are then copied
 to the "C:\Users\Dropbox\" folder, and all the new portrait images are copied to
 the "C:\Users\Dropbox\dc01" subfolder. Since the path or the subfolder name doesn't
-contain any space characters, they don't needs to be enveloped with quotation marks.
+contain any space characters, they don't need to be enveloped with quotation marks.
 Furthermore, the word -Output may be left out from the command as well, because
 -Output values are read automatically from the first parameter position.
 
@@ -1409,16 +1404,15 @@ effective until they are changed again. The execution policy for a particular se
                     remove the ("master") execution policy that is set with a Group
                     Policy setting.
 
-    Please note, that the Group Policy setting "Turn on Script Execution" overrides
-    the execution policies set in Windows PowerShell in all scopes. To find this
-    ("master") setting, please, for example, open the Group Policy Editor (gpedit.msc)
-    and navigate to Computer Configuration > Administrative Templates >
-    Windows Components > Windows PowerShell.
+    Notes: 	      - Please note, that the Group Policy setting "Turn on Script Execution"
+                    overrides the execution policies set in Windows PowerShell in all 
+                    scopes. To find this ("master") setting, please, for example, open 
+                    the Group Policy Editor (gpedit.msc) and navigate to 
+                    Computer Configuration > Administrative Templates > 
+                    Windows Components > Windows PowerShell.
 
-
-    Notes 	      - The Group Policy Editor is not available in any Home or Starter
-                    editions of Windows, be it Windows XP, Windows 7, Windows 8.1
-                    or Windows 10.
+                  - The Group Policy Editor is not available in any Home or Starter
+                    editions of Windows.
 
                   - Group Policy (gpedit.msc) setting "Turn on Script Execution":
                     Not configured 	                                          : No effect, the default
