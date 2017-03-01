@@ -31,8 +31,8 @@ param (
     [switch]$Force,
     [Alias("NoPortrait","NoSubfolder","Exclude")]
     [switch]$ExcludePortrait,
-    [Alias("IncludeCurrentLockScreenBackgroundHive")]
-    [switch]$Include,
+    [Alias("IncludeCurrentLockScreenBackgroundHive","Include")]
+    [switch]$IncludeHive,
     [switch]$Log,
     [switch]$Open,
     [switch]$Audio
@@ -201,8 +201,8 @@ Begin {
         } # Else (If [System.Environment]::OSVersion)
 
 
-    # Add the path of the current lock screen wallpaper hive to the sources, if set to do so with the -Include parameter
-    If (($Include) -and (($source_three) -ne $true)) {
+    # Add the path of the current lock screen wallpaper hive to the sources, if set to do so with the -IncludeHive parameter
+    If (($IncludeHive) -and (($source_three) -ne $true)) {
 
         # Note: The wallpapers may have at least .png and .jpg file extensions.
         # Source: http://www.ohmancorp.com/RefWin-windows8-change-pre-login-screen-background.asp
@@ -213,11 +213,11 @@ Begin {
         $source_path_secondary = ([System.IO.Path]::GetDirectoryName($current_lockscreen_background_full_path))
         $source_paths += "$source_path_secondary\*"
 
-    } ElseIf (($Include) -and (($source_three) -eq $true)) {
+    } ElseIf (($IncludeHive) -and (($source_three) -eq $true)) {
         $continue = $true
     } Else {
         $continue = $true
-    } # Else (If $Include)
+    } # Else (If $IncludeHive)
 
 
     # Select files greater than 200kb                                                                       # Credit: robledosm: "Save lockscreen as wallpaper"
@@ -333,7 +333,7 @@ Begin {
                                             } # Else (If $ExcludePortrait)
 
         # Try to process each file (-gt 200kb) only once
-        If ($Include) {
+        If ($IncludeHive) {
 
             If (($source_one) -eq $true) {
 
@@ -380,7 +380,7 @@ Begin {
             } # ForEach $sample)
         } Else {
             $unique_files = $sources
-        } # Else (If $Include)
+        } # Else (If $IncludeHive)
 
 
                     # Compare the hash values
@@ -1118,8 +1118,8 @@ http://mikefrobbins.com/2015/03/31/powershell-advanced-functions-can-we-build-th
 
 <#
 .SYNOPSIS
-Retrieves Windows Spotlight lock screen wallpapers and saves them to a defined
-directory.
+Retrieves local Windows Spotlight lock screen wallpapers and saves them to
+a defined directory.
 
 .DESCRIPTION
  Get-Windows10LockScreenWallpapers uses by default one of the three methods
@@ -1136,7 +1136,7 @@ directory.
     $env:windir\Web\Screen directory)
 
 The methods are tested in an ascending order and selected as the primary (only)
-method, if deemed to be valid. By adding the -Include parameter to the command
+method, if deemed to be valid. By adding the -IncludeHive parameter to the command
 launching Get-Windows10LockScreenWallpapers the third method of wallpaper searching
 will be enabled, so that Get-Windows10LockScreenWallpapers will also look to the
 current lock screen hive, even if the first method (registry) or the second
@@ -1149,7 +1149,7 @@ in the -Output folder or a portrait picture in the -Subfolder directory. By defa
 Get-Windows10LockScreenWallpapers writes the landscape files to
 "$($env:USERPROFILE)\Pictures\Wallpapers"(, which is the default -Output directory),
 and the portrait pictures are placed in a subfolder called "Vertical" inside the
-folder specified with the -Output parameter. The primary save location 
+folder specified with the -Output parameter. The primary save location
 ("destination") may be set with the -Output parameter, and the name of the subfolder
 may be changed with the -Subfolder parameter - the former accepts a full path as
 a value, and the latter just a plain directory name.
@@ -1158,17 +1158,17 @@ The images are loaded as ImageFile COM objects with Microsoft Windows Image
 Acquisition (WIA, which relies on the Windows Image Acquisition (WIA) service
 'stisvc'), and over 300 image properties (usually, though, most of them are empty
 or non-existent...) are read from the pictures before the new images are copied to
-their final destination. To exclude the portrait pictures from the results 
+their final destination. To exclude the portrait pictures from the results
 altogether, the parameter -ExcludePortrait may be added to the command launching
 Get-Windows10LockScreenWallpapers.
 
-The -Log parameter will start a log creation procedure (in case new files were 
-acquired), in which the extracted image properties are written to a new CSV file 
-(spotlight_log.csv) or appended to an existing log file. The other available 
-parameters (-Force, -Open and -Audio) are discussed in further detail below. 
-Please note that if any of the individual parameter values include space 
-characters, the individual value should be enclosed in quotation marks (single 
-or double), so that PowerShell can interpret the command correctly. This script 
+The -Log parameter will start a log creation procedure (in case new files were
+acquired), in which the extracted image properties are written to a new CSV file
+(spotlight_log.csv) or appended to an existing log file. The other available
+parameters (-Force, -Open and -Audio) are discussed in further detail below.
+Please note that if any of the individual parameter values include space
+characters, the individual value should be enclosed in quotation marks (single
+or double), so that PowerShell can interpret the command correctly. This script
 is forked from robledosm's script "Save lockscreen as wallpaper"
 (https://github.com/robledosm/save-lockscreen-as-wallpaper).
 
@@ -1215,19 +1215,20 @@ File Manager in every case, regardless whether any new files were found or not.
 .PARAMETER ExcludePortrait
 with aliases -NoPortrait, -NoSubfolder and -Exclude The -ExcludePortrait parameter
 excludes all portrait (vertical) pictures from the files that will be copied to a
-new location. -ExcludePortrait also prevents the (automatic) creation of the 
+new location. -ExcludePortrait also prevents the (automatic) creation of the
 -Subfolder directory inside the main -Output destination.
 
-.PARAMETER Include
-with an alias -IncludeCurrentLockScreenBackgroundHive. If the -Include parameter is
-used in the command launching Get-Windows10LockScreenWallpapers, the third method
-of wallpaper searching will be enabled, so that Get-Windows10LockScreenWallpapers
-will also look to the current lock screen hive, even if the first method (registry)
-or the second method (estimation) was selected as the primary method for searching
-the available local lock screen wallpapers. Usually this will add a directory called
-'$env:windir\Web\Screen' to the list of source paths to be queried for new images.
-Please note that the items inside the current lock screen hive may be of varying
-file extension type, including mostly .jpg and .png pictures.
+.PARAMETER IncludeHive
+with aliases -IncludeCurrentLockScreenBackgroundHive and -Include. If the -IncludeHive
+parameter is used in the command launching Get-Windows10LockScreenWallpapers,
+the third method of wallpaper searching will be enabled, so that
+Get-Windows10LockScreenWallpapers will also look to the current lock screen hive,
+even if the first method (registry) or the second method (estimation) was selected
+as the primary method for searching the available local lock screen wallpapers.
+Usually this will add a directory called '$env:windir\Web\Screen' to the list of
+source paths to be queried for new images. Please note that the items inside the
+current lock screen hive may be of varying file extension type, including
+mostly .jpg and .png pictures.
 
 .PARAMETER Log
 If the -Log parameter is added to the command launching
@@ -1253,8 +1254,8 @@ If the -Open parameter is used in the command launching
 Get-Windows10LockScreenWallpapers and new files are found, the default File Manager
 is opened at the -Output folder after the files are processed. If the -Force
 parameter is used in adjunction with the -Open parameter, the main destination path
-is opened in the File Manager regardless whether any new files were found or not. 
-Please note, though, that the -Force parameter will also Force the creation of 
+is opened in the File Manager regardless whether any new files were found or not.
+Please note, though, that the -Force parameter will also Force the creation of
 the -Output folder.
 
 .PARAMETER Audio
@@ -1321,7 +1322,7 @@ Displays the help file.
 .EXAMPLE
 .\Get-Windows10LockScreenWallpapers.ps1 -Log -Audio -Open -ExcludePortrait -Force
 Runs the script and creates the default -Output folder, if it doesn't exist, since
-the -Force was used. Also, since the -Force was used, the default File Manager will 
+the -Force was used. Also, since the -Force was used, the default File Manager will
 be opened at the default -Output folder regardless whether any new files were found
 or not. Uses one of the three available methods for retrieving the Windows Spotlight
 lock screen wallpapers and compares their SHA256 hash values against the hash values
@@ -1329,16 +1330,16 @@ found in the default -Output folder to determine, whether any new files are pres
 or not. Since the -ExcludePortrait parameter was used, the results are limited to
 the landscape wallpapers, and the vertical portrait pictures are excluded from the
 images to be processed further. If new landscape (horizontal) images were found,
-after the new landscape wallpapers are copied to their default destination, a log 
-file creation/updating procedure is initiated, and a CSV-file (spotlight_log.csv) 
-is created/updated at the default -Output folder. Furthermore, if new files were 
+after the new landscape wallpapers are copied to their default destination, a log
+file creation/updating procedure is initiated, and a CSV-file (spotlight_log.csv)
+is created/updated at the default -Output folder. Furthermore, if new files were
 indeed found, an audible beep will occur.
 
 .EXAMPLE
-./Get-Windows10LockScreenWallpapers -Output C:\Users\Dropbox\ -Subfolder dc01 -Include
+./Get-Windows10LockScreenWallpapers -Output C:\Users\Dropbox\ -Subfolder dc01 -IncludeHive
 Uses one or two of the three available methods (registry, estimation and current
 lock screen hive) as the basis for determining the source paths, where the Windows
-Spotlight lock screen wallpapers are stored locally. Since the -Include parameter
+Spotlight lock screen wallpapers are stored locally. Since the -IncludeHive parameter
 was used, the third method of wallpaper searching will be used in any case, which
 usually means that that the contents of '$env:windir\Web\Screen' are also used as
 a source. Compares the SHA256 hash values of the found files against the hash values
@@ -1403,18 +1404,19 @@ effective until they are changed again. The execution policy for a particular se
                     default execution policy. This parameter will not alter or
                     remove the ("master") execution policy that is set with a Group
                     Policy setting.
-
+    __________
     Notes: 	      - Please note, that the Group Policy setting "Turn on Script Execution"
-                    overrides the execution policies set in Windows PowerShell in all 
-                    scopes. To find this ("master") setting, please, for example, open 
-                    the Group Policy Editor (gpedit.msc) and navigate to 
-                    Computer Configuration > Administrative Templates > 
+                    overrides the execution policies set in Windows PowerShell in all
+                    scopes. To find this ("master") setting, please, for example, open
+                    the Local Group Policy Editor (gpedit.msc) and navigate to
+                    Computer Configuration > Administrative Templates >
                     Windows Components > Windows PowerShell.
 
-                  - The Group Policy Editor is not available in any Home or Starter
-                    editions of Windows.
+                  - The Local Group Policy Editor (gpedit.msc) is not available in any 
+                    Home or Starter editions of Windows.
 
-                  - Group Policy (gpedit.msc) setting "Turn on Script Execution":
+                  - Group Policy setting "Turn on Script Execution":
+
                     Not configured 	                                          : No effect, the default
                                                                                 value of this setting
                     Disabled 	                                              : Restricted
