@@ -39,12 +39,12 @@
             <p>
                 Get-Windows10LockScreenWallpapers uses by default one of the three methods below to determine the source path, where the Windows Spotlight lock screen wallpapers are stored locally:</p>
                 <ol>
-                    <li>Reading a registry key under HKEY_CURRENT_USER: "<code>\SOFTWARE\Microsoft\Windows\CurrentVersion\Lock&nbsp;Screen\Creative\LandscapeAssetPath</code>"</li>
+                    <li>Reading a registry key under <code>HKEY_CURRENT_USER</code>: "<code>\SOFTWARE\Microsoft\Windows\CurrentVersion\Lock&nbsp;Screen\Creative\LandscapeAssetPath</code>"</li>
                     <li>Estimating the * value (and the source path) in "<code>$($env:LOCALAPPDATA)\Packages\Microsoft.Windows.ContentDelivery*\LocalState\Assets</code>" path, which on most Windows 10 machines would most likely point to the "<code>\Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy\LocalState\Assets</code>" directory</li>
                     <li>Figuring out the current lock screen hive (which usually is in the <code>$env:windir\Web\Screen</code> directory)</li>
                 </ol>
             <p>                
-                The methods are tested in an ascending order and selected as the primary (only) method, if deemed to be valid. By adding the <code>-Include</code> parameter to the command launching Get-Windows10LockScreenWallpapers the third method of wallpaper searching will be enabled, so that Get-Windows10LockScreenWallpapers will also look to the current lock screen hive, even if the first method (registry) or the second method (estimation) was selected as the primary method for searching the available local lock screen wallpapers.</p>
+                The methods are tested in an ascending order and selected as the primary (only) method, if deemed to be valid. By adding the <code>-IncludeHive</code> parameter to the command launching Get-Windows10LockScreenWallpapers the third method of wallpaper searching will be enabled, so that Get-Windows10LockScreenWallpapers will also look to the current lock screen hive, even if the first method (registry) or the second method (estimation) was selected as the primary method for searching the available local lock screen wallpapers.</p>
             <p>
                 Get-Windows10LockScreenWallpapers uses the inbuilt <code>Get-FileHash</code> cmdlet to calculate SHA256 hash values of the files for determining, whether a wallpaper already exists in the <code>-Output</code> folder or a portrait picture in the <code>-Subfolder</code> directory. By default Get-Windows10LockScreenWallpapers writes the landscape files to "<code>$($env:USERPROFILE)\Pictures\Wallpapers</code>"(, which is the default <code>-Output</code> directory), and the portrait pictures are placed in a subfolder called "<code>Vertical</code>" inside the folder specified with the <code>-Output</code> parameter. The primary save location ("<dfn>destination</dfn>") may be set with the <code>-Output</code> parameter, and the name of the subfolder may be changed with the <code>-Subfolder</code> parameter – the former accepts a full path as a value, and the latter just a plain directory name.</p>
             <p>
@@ -153,8 +153,8 @@
                 </p>
                 <p>
                     <li>
-                        <h5>Parameter <code>-Include</code></h5>
-                        <p>with an alias <code>-IncludeCurrentLockScreenBackgroundHive</code>. If the <code>-Include</code> parameter is used in the command launching Get-Windows10LockScreenWallpapers, the third method of wallpaper searching will be enabled, so that Get-Windows10LockScreenWallpapers will also look to the current lock screen hive, even if the first method (registry) or the second method (estimation) was selected as the primary method for searching the available local lock screen wallpapers. Usually this will add a directory called '<code>$env:windir\Web\Screen</code>' to the list of source paths to be queried for new images. Please note that the items inside the current lock screen hive may be of varying file extension type, including mostly <code>.jpg</code> and <code>.png</code> pictures.</p>
+                        <h5>Parameter <code>-IncludeHive</code></h5>
+                        <p>with aliases <code>-IncludeCurrentLockScreenBackgroundHive</code> and <code>-Include</code>. If the <code>-IncludeHive</code> parameter is used in the command launching Get-Windows10LockScreenWallpapers, the third method of wallpaper searching will be enabled, so that Get-Windows10LockScreenWallpapers will also look to the current lock screen hive, even if the first method (registry) or the second method (estimation) was selected as the primary method for searching the available local lock screen wallpapers. Usually this will add a directory called '<code>$env:windir\Web\Screen</code>' to the list of source paths to be queried for new images. Please note that the items inside the current lock screen hive may be of varying file extension type, including mostly <code>.jpg</code> and <code>.png</code> pictures.</p>
                     </li>
                 </p>
                 <p>
@@ -285,7 +285,7 @@
                 </p>
                 <p>
                     <li><code>./Get-Windows10LockScreenWallpapers <code>-Output</code> C:\Users\Dropbox\ <code>-Subfolder</code> dc01 -Include</code><br />
-                    Uses one or two of the three available methods (registry, estimation and current lock screen hive) as the basis for determining the source paths, where the Windows Spotlight lock screen wallpapers are stored locally. Since the <code>-Include</code> parameter was used, the third method of wallpaper searching will be used in any case, which usually means that that the contents of '<code>$env:windir\Web\Screen</code>' are also used as a source. Compares the SHA256 hash values of the found files against the hash values found in the "<code>C:\Users\Dropbox\</code>" and "<code>C:\Users\Dropbox\dc01</code>" folders to determine, whether any new files are present or not. All new landscape images are then copied to the "<code>C:\Users\Dropbox\</code>" folder, and all the new portrait images are copied to the "<code>C:\Users\Dropbox\dc01</code>" subfolder. Since the path or the subfolder name doesn't contain any space characters, they don't need to be enveloped with quotation marks. Furthermore, the word <code>-Output</code> may be left out from the command as well, because <code>-Output</code> values are read automatically from the first parameter position.</li>
+                    Uses one or two of the three available methods (registry, estimation and current lock screen hive) as the basis for determining the source paths, where the Windows Spotlight lock screen wallpapers are stored locally. Since the <code>-IncludeHive</code> parameter was used, the third method of wallpaper searching will be used in any case, which usually means that that the contents of '<code>$env:windir\Web\Screen</code>' are also used as a source. Compares the SHA256 hash values of the found files against the hash values found in the "<code>C:\Users\Dropbox\</code>" and "<code>C:\Users\Dropbox\dc01</code>" folders to determine, whether any new files are present or not. All new landscape images are then copied to the "<code>C:\Users\Dropbox\</code>" folder, and all the new portrait images are copied to the "<code>C:\Users\Dropbox\dc01</code>" subfolder. Since the path or the subfolder name doesn't contain any space characters, they don't need to be enveloped with quotation marks. Furthermore, the word <code>-Output</code> may be left out from the command as well, because <code>-Output</code> values are read automatically from the first parameter position.</li>
                 </p>
                 <p>
                     <li><p><code>Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope LocalMachine</code><br />
@@ -318,10 +318,10 @@
                                         <td colspan="2" style="padding:6px">Removes the currently assigned execution policy from the current scope. If the execution policy in all scopes is set to <code>Undefined</code>, the effective execution policy is <code>Restricted</code>, which is the default execution policy. This parameter will not alter or remove the ("<dfn>master</dfn>") execution policy that is set with a Group Policy setting.</td>
                                     </tr>
                                     <tr>
-                                        <td style="padding:6px; border-top-width:1px; border-top-style:solid"><span style="font-size: 95%">Notes:</span></td>
+                                        <td style="padding:6px; border-top-width:1px; border-top-style:solid;"><span style="font-size: 95%">Notes:</span></td>
                                         <td colspan="2" style="padding:6px">
                                             <ul>
-                                                <li><span style="font-size: 95%">Please note, that the Group Policy setting "<code>Turn on Script Execution</code>" overrides the execution policies set in Windows PowerShell in all scopes. To find this ("<dfn>master</dfn>") setting, please, for example, open the Group Policy Editor (<code>gpedit.msc</code>) and navigate to Computer Configuration → Administrative Templates → Windows Components → Windows PowerShell.</span></li>
+                                                <li><span style="font-size: 95%">Please note, that the Group Policy setting "<code>Turn on Script Execution</code>" overrides the execution policies set in Windows PowerShell in all scopes. To find this ("<dfn>master</dfn>") setting, please, for example, open the Local Group Policy Editor (<code>gpedit.msc</code>) and navigate to Computer Configuration → Administrative Templates → Windows Components → Windows PowerShell.</span></li>
                                             </ul>
                                         </td>
                                     </tr>
@@ -329,13 +329,12 @@
                                         <th></th>
                                         <td colspan="2" style="padding:6px">
                                             <ul>
-                                                <li><span style="font-size: 95%">The Group Policy Editor is not available in any Home or Starter editions of Windows.</span></li>                                            
-                                                <li><span style="font-size: 95%">Group Policy (<code>gpedit.msc</code>) setting "<code>Turn on Script Execution</code>":</span></li>
+                                                <li><span style="font-size: 95%">The Local Group Policy Editor (<code>gpedit.msc</code>) is not available in any Home or Starter editions of Windows.</span></li>                                            
                                                 <ol>
                                                     <p>
                                                         <table>
                                                             <tr>
-                                                                <td style="padding:6px; font-size: 85%"><strong>Group Policy Setting Value</strong></td>
+                                                                <td style="padding:6px; font-size: 85%"><strong>Group Policy Setting</strong> "<code>Turn&nbsp;on&nbsp;Script&nbsp;Execution</code>"</td>
                                                                 <td style="padding:6px; font-size: 85%"><strong>PowerShell Equivalent</strong> (concerning all scopes)</td>
                                                             </tr>
                                                             <tr>
